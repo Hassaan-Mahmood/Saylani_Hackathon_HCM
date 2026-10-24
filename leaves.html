@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Leave Requests - HCM Lite</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="app-layout">
+    <aside class="sidebar" id="sidebar"></aside>
+
+    <div class="main">
+      <header class="topbar" id="topbar"></header>
+
+      <section class="content">
+        <div class="stat-grid">
+          <div class="card stat-card"><div><div class="stat-label">Pending</div><div class="stat-value" id="cntPending">0</div><div class="stat-note">Waiting for decision</div></div><div class="stat-icon ic-orange">⏳</div></div>
+          <div class="card stat-card"><div><div class="stat-label">Approved</div><div class="stat-value" id="cntApproved">0</div><div class="stat-note">All time</div></div><div class="stat-icon ic-green">✅</div></div>
+          <div class="card stat-card"><div><div class="stat-label">Rejected</div><div class="stat-value" id="cntRejected">0</div><div class="stat-note">All time</div></div><div class="stat-icon ic-red">❌</div></div>
+        </div>
+
+        <div class="card">
+          <div class="toolbar">
+            <select class="input" id="leaveFilter" style="max-width:220px" onchange="renderAdminLeaves()">
+              <option value="pending">Pending only</option>
+              <option value="approved">Approved</option>
+              <option value="rejected">Rejected</option>
+              <option value="all">All requests</option>
+            </select>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Employee</th><th>Type / Reason</th><th>Dates</th><th>Days</th><th>Status</th><th class="text-right">Action</th></tr></thead>
+              <tbody id="leavesBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <!-- Approve / Reject with comment -->
+  <div class="modal-backdrop" id="decisionModal">
+    <div class="modal">
+      <h3 id="decisionTitle">Decision</h3>
+      <p class="muted" id="decisionInfo" style="margin-bottom:14px"></p>
+      <input type="hidden" id="decisionId">
+      <input type="hidden" id="decisionType">
+      <div class="field">
+        <label>Comment (required when rejecting)</label>
+        <textarea class="input" id="decisionComment" placeholder="Add a note for the employee..."></textarea>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-ghost" onclick="closeModal('decisionModal')">Cancel</button>
+        <button class="btn btn-success" id="decisionBtn" onclick="submitDecision()">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast-container" id="toastBox"></div>
+
+  <script src="js/storage.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/helper.js"></script>
+  <script src="js/employees.js"></script>
+  <script src="js/attendance.js"></script>
+  <script src="js/leave.js"></script>
+  <script>
+    if (initPage("admin", "leaves", "Leave Requests", "Approve or reject employee leave.")) {
+      renderAdminLeaves();
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - HCM Lite</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="login-body">
+
+  <div class="login-wrap">
+    <div class="login-card">
+      <div class="brand-center">
+        <div class="brand-logo">👥</div>
+        <h1>HCM Lite</h1>
+        <p>HR Management</p>
+      </div>
+
+      <!-- First-run setup (shown only when no Admin exists) -->
+      <form id="setupBox" class="hidden" onsubmit="handleSetup(); return false;">
+        <h2>Welcome! Let's set things up</h2>
+        <p class="muted">Create your company and the Admin account. This only happens once.</p>
+        <div class="field"><label>Company name</label><input class="input" id="setupCompany" placeholder="e.g. Saylani Tech"></div>
+        <div class="field"><label>Admin name</label><input class="input" id="setupName" placeholder="Your full name"></div>
+        <div class="field"><label>Admin email</label><input class="input" type="email" id="setupEmail" placeholder="admin@company.com"></div>
+        <div class="field"><label>Password</label><input class="input" type="password" id="setupPassword" placeholder="Min 6 characters"></div>
+        <div class="field"><label>Confirm password</label><input class="input" type="password" id="setupConfirm"></div>
+        <button class="btn btn-primary btn-block" type="submit">Create Company &amp; Admin</button>
+      </form>
+
+      <!-- Normal login -->
+      <form id="loginBox" class="hidden" onsubmit="handleLogin(); return false;">
+        <div class="tabs">
+          <button type="button" class="tab active" id="tabAdmin" onclick="selectRole('admin')">Admin</button>
+          <button type="button" class="tab" id="tabEmployee" onclick="selectRole('employee')">Employee</button>
+        </div>
+        <p class="muted" id="loginHint">Sign in with your Admin account.</p>
+        <div class="field"><label>Email</label><input class="input" type="email" id="loginEmail" placeholder="you@company.com"></div>
+        <div class="field"><label>Password</label><input class="input" type="password" id="loginPassword" placeholder="Your password"></div>
+        <button class="btn btn-primary btn-block" type="submit">Sign In</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="toast-container" id="toastBox"></div>
+
+  <script src="js/storage.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/helper.js"></script>
+  <script src="js/attendance.js"></script>
+  <script src="js/leave.js"></script>
+  <script>
+    applyTheme();
+    initLoginPage();
+  </script>
+</body>
+</html>

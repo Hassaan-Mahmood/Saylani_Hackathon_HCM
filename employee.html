@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Dashboard - HCM Lite</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="app-layout">
+    <aside class="sidebar" id="sidebar"></aside>
+
+    <div class="main">
+      <header class="topbar" id="topbar"></header>
+
+      <section class="content">
+        <div class="grid-2">
+          <!-- Check in / out -->
+          <div class="card checkin-card">
+            <div class="card-head"><h3>⏱️ Today</h3></div>
+            <div class="clock-big" id="bigClock"></div>
+            <div class="muted" id="todayDate"></div>
+            <div class="btn-row">
+              <button class="btn btn-success" id="btnIn" onclick="handleCheckIn()">Check In</button>
+              <button class="btn btn-danger" id="btnOut" onclick="handleCheckOut()">Check Out</button>
+            </div>
+            <div id="checkStatus"></div>
+            <div id="todayTimes"></div>
+          </div>
+
+          <!-- Month summary + leave balance -->
+          <div class="card">
+            <div class="card-head"><h3>📅 This Month</h3></div>
+            <div class="mini-stats" id="monthStats"></div>
+            <div class="card-head"><h3>🌴 Leave Balance</h3></div>
+            <div id="leaveBalance"></div>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <!-- Apply for leave -->
+          <div class="card">
+            <div class="card-head"><h3>📝 Apply for Leave</h3></div>
+            <div class="grid-form">
+              <div class="field full"><label>Leave type</label>
+                <select class="input" id="leaveType">
+                  <option>Annual</option><option>Sick</option><option>Casual</option><option>Emergency</option>
+                </select>
+              </div>
+              <div class="field"><label>From</label><input class="input" type="date" id="leaveFrom"></div>
+              <div class="field"><label>To</label><input class="input" type="date" id="leaveTo"></div>
+              <div class="field full"><label>Reason</label><textarea class="input" id="leaveReason" placeholder="Why do you need leave?"></textarea></div>
+            </div>
+            <p class="small muted" style="margin-bottom:12px">Weekends are not counted. Requests that exceed your yearly quota are rejected automatically.</p>
+            <button class="btn btn-primary" onclick="handleApplyLeave()">Submit Request</button>
+          </div>
+
+          <!-- My leave requests -->
+          <div class="card">
+            <div class="card-head"><h3>📋 My Leave Requests</h3></div>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Type</th><th>Dates</th><th>Days</th><th>Status</th><th></th></tr></thead>
+                <tbody id="myLeavesBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Attendance history -->
+        <div class="card">
+          <div class="card-head">
+            <h3>🗂️ My Attendance History</h3>
+            <input class="input" type="month" id="historyMonth" style="max-width:190px" onchange="renderHistory()">
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Date</th><th>Status</th><th>Check-in</th><th>Check-out</th><th>Hours</th></tr></thead>
+              <tbody id="historyBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <div class="toast-container" id="toastBox"></div>
+
+  <script src="js/storage.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/helper.js"></script>
+  <script src="js/employees.js"></script>
+  <script src="js/attendance.js"></script>
+  <script src="js/leave.js"></script>
+  <script>
+    // Employees only. Admins are redirected to admin.html by requireLogin().
+    if (initPage("employee", "dashboard", "My Dashboard", "Check in, apply for leave and track your attendance.")) {
+      document.getElementById("historyMonth").value = todayStr().slice(0, 7);
+      document.getElementById("leaveFrom").min = todayStr();
+      document.getElementById("leaveTo").min = todayStr();
+      renderEmployeePage();
+    }
+  </script>
+</body>
+</html>
