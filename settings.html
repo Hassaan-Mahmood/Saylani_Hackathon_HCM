@@ -1,87 +1,176 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Company Settings - HCM Lite</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css">
-</head>
-<body>
-  <div class="app-layout">
-    <aside class="sidebar" id="sidebar"></aside>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Company Settings - HCM Lite</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap"
+            rel="stylesheet"
+        />
+        <link rel="stylesheet" href="css/style.css" />
+    </head>
+    <body>
+        <div class="app-layout">
+            <aside class="sidebar" id="sidebar"></aside>
 
-    <div class="main">
-      <header class="topbar" id="topbar"></header>
+            <div class="main">
+                <header class="topbar" id="topbar"></header>
 
-      <section class="content">
-        <div class="card" style="max-width:640px">
-          <div class="card-head"><h3>⚙️ Company Setup</h3></div>
-          <div class="grid-form">
-            <div class="field full"><label>Company name</label><input class="input" id="setName"></div>
-            <div class="field"><label>Office start time</label><input class="input" type="time" id="setStart"></div>
-            <div class="field"><label>Grace minutes</label><input class="input" type="number" min="0" max="120" id="setGrace"></div>
-            <div class="field"><label>Yearly leave quota (days)</label><input class="input" type="number" min="0" max="365" id="setQuota"></div>
-            <div class="field"><label>Currency label</label><input class="input" id="setCurrency" maxlength="5" placeholder="PKR"></div>
-          </div>
-          <p class="small muted" style="margin-bottom:16px">Late = check-in after start time + grace minutes. Weekends are always off.</p>
-          <button class="btn btn-primary" onclick="saveSettings()">Save Settings</button>
+                <section class="content">
+                    <div class="card" style="max-width: 640px">
+                        <div class="card-head"><h3>⚙️ Company Setup</h3></div>
+                        <div class="grid-form">
+                            <div class="field full">
+                                <label>Company name</label
+                                ><input class="input" id="setName" />
+                            </div>
+                            <div class="field">
+                                <label>Office start time</label
+                                ><input
+                                    class="input"
+                                    type="time"
+                                    id="setStart"
+                                />
+                            </div>
+                            <div class="field">
+                                <label>Grace minutes</label
+                                ><input
+                                    class="input"
+                                    type="number"
+                                    min="0"
+                                    max="120"
+                                    id="setGrace"
+                                />
+                            </div>
+                            <div class="field">
+                                <label>Yearly leave quota (days)</label
+                                ><input
+                                    class="input"
+                                    type="number"
+                                    min="0"
+                                    max="365"
+                                    id="setQuota"
+                                />
+                            </div>
+                            <div class="field">
+                                <label>Currency label</label
+                                ><input
+                                    class="input"
+                                    id="setCurrency"
+                                    maxlength="5"
+                                    placeholder="PKR"
+                                />
+                            </div>
+                        </div>
+                        <p class="small muted" style="margin-bottom: 16px">
+                            Late = check-in after start time + grace minutes.
+                            Weekends are always off.
+                        </p>
+                        <button
+                            class="btn btn-primary"
+                            onclick="saveSettings()"
+                        >
+                            Save Settings
+                        </button>
+                    </div>
+
+                    <div class="card mt" style="max-width: 640px">
+                        <div class="card-head"><h3>⚠️ Danger Zone</h3></div>
+                        <p class="muted small" style="margin-bottom: 12px">
+                            Delete every user, attendance record and leave
+                            request, then start the first-run setup again.
+                        </p>
+                        <button class="btn btn-danger" onclick="resetAllData()">
+                            Reset All Data
+                        </button>
+                    </div>
+                </section>
+            </div>
         </div>
 
-        <div class="card mt" style="max-width:640px">
-          <div class="card-head"><h3>⚠️ Danger Zone</h3></div>
-          <p class="muted small" style="margin-bottom:12px">Delete every user, attendance record and leave request, then start the first-run setup again.</p>
-          <button class="btn btn-danger" onclick="resetAllData()">Reset All Data</button>
-        </div>
-      </section>
-    </div>
-  </div>
+        <div class="toast-container" id="toastBox"></div>
 
-  <div class="toast-container" id="toastBox"></div>
+        <script src="js/storage.js"></script>
+        <script src="js/auth.js"></script>
+        <script src="js/helper.js"></script>
+        <script src="js/employees.js"></script>
+        <script src="js/attendance.js"></script>
+        <script src="js/leave.js"></script>
+        <script>
+            // Fill the form with the saved settings
+            function loadSettings() {
+                const c = getCompany();
+                document.getElementById("setName").value = c.name;
+                document.getElementById("setStart").value = c.startTime;
+                document.getElementById("setGrace").value = c.graceMinutes;
+                document.getElementById("setQuota").value = c.yearlyLeaveQuota;
+                document.getElementById("setCurrency").value = c.currency;
+            }
 
-  <script src="js/storage.js"></script>
-  <script src="js/auth.js"></script>
-  <script src="js/helper.js"></script>
-  <script src="js/employees.js"></script>
-  <script src="js/attendance.js"></script>
-  <script src="js/leave.js"></script>
-  <script>
-    // Fill the form with the saved settings
-    function loadSettings() {
-      const c = getCompany();
-      document.getElementById("setName").value = c.name;
-      document.getElementById("setStart").value = c.startTime;
-      document.getElementById("setGrace").value = c.graceMinutes;
-      document.getElementById("setQuota").value = c.yearlyLeaveQuota;
-      document.getElementById("setCurrency").value = c.currency;
-    }
+            function saveSettings() {
+                const name = document.getElementById("setName").value.trim();
+                const startTime = document.getElementById("setStart").value;
+                const grace = Number(document.getElementById("setGrace").value);
+                const quota = Number(document.getElementById("setQuota").value);
+                const currency =
+                    document.getElementById("setCurrency").value.trim() ||
+                    "PKR";
 
-    function saveSettings() {
-      const name = document.getElementById("setName").value.trim();
-      const startTime = document.getElementById("setStart").value;
-      const grace = Number(document.getElementById("setGrace").value);
-      const quota = Number(document.getElementById("setQuota").value);
-      const currency = document.getElementById("setCurrency").value.trim() || "PKR";
+                if (
+                    !name ||
+                    !startTime ||
+                    grace < 0 ||
+                    quota < 0 ||
+                    document.getElementById("setGrace").value === "" ||
+                    document.getElementById("setQuota").value === ""
+                ) {
+                    showToast(
+                        "Please fill in all settings with valid values.",
+                        "error",
+                    );
+                    return;
+                }
+                saveCompany({
+                    name: name,
+                    startTime: startTime,
+                    graceMinutes: grace,
+                    yearlyLeaveQuota: quota,
+                    currency: currency,
+                });
+                showToast("Settings saved.");
+                initPage(
+                    "admin",
+                    "settings",
+                    "Company Settings",
+                    "Office hours, grace period and leave quota.",
+                );
+            }
 
-      if (!name || !startTime || grace < 0 || quota < 0 || document.getElementById("setGrace").value === "" || document.getElementById("setQuota").value === "") {
-        showToast("Please fill in all settings with valid values.", "error");
-        return;
-      }
-      saveCompany({ name: name, startTime: startTime, graceMinutes: grace, yearlyLeaveQuota: quota, currency: currency });
-      showToast("Settings saved.");
-      initPage("admin", "settings", "Company Settings", "Office hours, grace period and leave quota.");
-    }
+            function resetAllData() {
+                if (
+                    !confirm(
+                        "This deletes ALL data and cannot be undone. Continue?",
+                    )
+                )
+                    return;
+                Object.values(KEYS).forEach((key) =>
+                    localStorage.removeItem(key),
+                );
+                window.location.href = "index.html";
+            }
 
-    function resetAllData() {
-      if (!confirm("This deletes ALL data and cannot be undone. Continue?")) return;
-      Object.values(KEYS).forEach((key) => localStorage.removeItem(key));
-      window.location.href = "index.html";
-    }
-
-    if (initPage("admin", "settings", "Company Settings", "Office hours, grace period and leave quota.")) {
-      loadSettings();
-    }
-  </script>
-</body>
+            if (
+                initPage(
+                    "admin",
+                    "settings",
+                    "Company Settings",
+                    "Office hours, grace period and leave quota.",
+                )
+            ) {
+                loadSettings();
+            }
+        </script>
+    </body>
 </html>

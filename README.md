@@ -44,15 +44,15 @@ hcm-lite/
 
 ## 3. Pages ka kaam
 
-| Page | Kaun dekh sakta hai | Kaam |
-|------|---------------------|------|
-| `index.html` | Sab | Pehli baar company + Admin setup, phir Admin/Employee login |
-| `admin.html` | Admin | 6 stat cards, department chart, 7-day trend, aaj ki attendance table, Smart Helper |
-| `employees.html` | Admin | Employee add, edit, delete, search aur department filter |
-| `leaves.html` | Admin | Leave requests ko comment ke saath approve ya reject karna |
-| `settings.html` | Admin | Office start time, grace minutes, yearly leave quota, company name, currency |
-| `employee.html` | Employee | Check-in/out, leave apply, leave balance, apni attendance history |
-| `payslip.html` | Employee | Mahine ka payslip banana aur print / PDF save karna |
+| Page             | Kaun dekh sakta hai | Kaam                                                                               |
+| ---------------- | ------------------- | ---------------------------------------------------------------------------------- |
+| `index.html`     | Sab                 | Pehli baar company + Admin setup, phir Admin/Employee login                        |
+| `admin.html`     | Admin               | 6 stat cards, department chart, 7-day trend, aaj ki attendance table, Smart Helper |
+| `employees.html` | Admin               | Employee add, edit, delete, search aur department filter                           |
+| `leaves.html`    | Admin               | Leave requests ko comment ke saath approve ya reject karna                         |
+| `settings.html`  | Admin               | Office start time, grace minutes, yearly leave quota, company name, currency       |
+| `employee.html`  | Employee            | Check-in/out, leave apply, leave balance, apni attendance history                  |
+| `payslip.html`   | Employee            | Mahine ka payslip banana aur print / PDF save karna                                |
 
 ---
 
@@ -61,7 +61,7 @@ hcm-lite/
 Har protected page ke neeche ye line chalti hai:
 
 ```js
-initPage("admin", "dashboard", "Executive Overview")
+initPage("admin", "dashboard", "Executive Overview");
 ```
 
 `initPage` andar `requireLogin(role)` (auth.js) chalata hai:
@@ -78,28 +78,31 @@ Employee sidebar: My Dashboard, My Payslip.
 
 ## 5. Data storage (localStorage keys)
 
-| Key | Kya store hota hai |
-|-----|--------------------|
-| `hcm_company` | `{ name, startTime, graceMinutes, yearlyLeaveQuota, currency }` |
-| `hcm_users` | Users ki list (Admin + Employees) |
-| `hcm_attendance` | Roz ka check-in/check-out record |
-| `hcm_leaves` | Leave requests |
-| `hcm_session` | Abhi login user: `{ userId, role, name }` |
-| `hcm_theme` | `light` ya `dark` (extra, sirf theme ke liye) |
+| Key              | Kya store hota hai                                              |
+| ---------------- | --------------------------------------------------------------- |
+| `hcm_company`    | `{ name, startTime, graceMinutes, yearlyLeaveQuota, currency }` |
+| `hcm_users`      | Users ki list (Admin + Employees)                               |
+| `hcm_attendance` | Roz ka check-in/check-out record                                |
+| `hcm_leaves`     | Leave requests                                                  |
+| `hcm_session`    | Abhi login user: `{ userId, role, name }`                       |
+| `hcm_theme`      | `light` ya `dark` (extra, sirf theme ke liye)                   |
 
 **User object**
+
 ```js
 { id, name, email, password (hash), role: "admin" | "employee",
   department, designation, salary, joinDate }
 ```
 
 **Attendance record**
+
 ```js
 { id, userId, date: "YYYY-MM-DD", checkIn: ISO, checkOut: ISO | null,
   workHours, isLate, isHalfDay }
 ```
 
 **Leave record**
+
 ```js
 { id, userId, userName, type, from, to, days, reason,
   status: "pending" | "approved" | "rejected",
@@ -122,6 +125,7 @@ Example: start 09:00, grace 15 min -> 09:16 ya uske baad check-in "Late".
 **Weekend**: Saturday aur Sunday off hain. Na attendance chahiye, na absent count hota hai, na leave mein ginte hain.
 
 **Leave rules**
+
 - Sirf working days ginte hain (weekends exclude).
 - Pichli date ki leave apply nahi ho sakti.
 - Dusri pending/approved leave ke saath dates overlap nahi ho sakti.
@@ -129,10 +133,12 @@ Example: start 09:00, grace 15 min -> 09:16 ya uske baad check-in "Late".
 - Admin approve karte waqt quota dobara check hota hai. Reject karne par comment zaroori hai.
 
 **Payslip**
+
 ```
 Daily Rate  = Monthly Base Salary / us mahine ke working days
 Net Salary  = Base - (Daily Rate x Absents + Daily Rate x 0.5 x Half-days)
 ```
+
 Late par koi deduction nahi. Approved leave paid hai. Maujooda mahine ka payslip "provisional" hota hai kyunke sirf aaj tak ke din ginte hain.
 
 ---
@@ -140,6 +146,7 @@ Late par koi deduction nahi. Approved leave paid hai. Maujooda mahine ka payslip
 ## 7. JavaScript files ka detail
 
 ### `storage.js`
+
 - `loadData / saveData`: localStorage se JSON parhna aur likhna.
 - `getCompany, getUsers, getAttendance, getLeaves` aur unke `save...` functions.
 - `getSession / setSession / clearSession`.
@@ -147,28 +154,33 @@ Late par koi deduction nahi. Approved leave paid hai. Maujooda mahine ka payslip
 - Date helpers: `todayStr`, `parseDate`, `isWeekend`, `getDatesBetween`, `countWorkingDays`. Sab dates local `YYYY-MM-DD` string hain.
 
 ### `auth.js`
+
 - `initLoginPage`: setup form ya login form dikhata hai (`isFirstRun` se decide hota hai).
 - `handleSetup`: company + Admin banata hai.
 - `handleLogin`, `logout`, `selectRole`.
 - `requireLogin(role)`: RBAC guard. `getCurrentUser()`.
 
 ### `helper.js`
+
 - `initPage`: login check + sidebar + topbar + clock banata hai.
 - `showToast`, `openModal / closeModal`, `toggleTheme`, `toggleSidebar`.
 - Formatting: `formatDate, formatTime, formatHours, formatMoney, initials, escapeHtml, badge`.
 - **Smart Helper**: `getSmartInsights` / `renderSmartHelper`. Admin ko aaj ki salahen deta hai, jaise kaun check-in nahi kar saka, kitne late hain, pending leaves, jinki leave balance kam hai.
 
 ### `employees.js`
+
 - `renderEmployees`: search + department filter ke saath table.
 - `openEmployeeModal`, `saveEmployee` (add aur edit dono), `deleteEmployee` (us ki attendance aur leaves bhi hat jati hain).
 
 ### `attendance.js`
+
 - Rules: `isLateCheckIn`, `calcWorkHours`, `getDayStatus` (kisi din ka status: present/late/half/leave/absent/weekend), `calcMonthStats`.
 - Employee: `handleCheckIn`, `handleCheckOut`, `renderEmployeePage` aur uske parts.
 - Admin: `getTodayStats`, `renderAdminDashboard`, department chart, 7-day trend, aaj ki table.
 - Payslip: `generatePayslip`, `printPayslip`.
 
 ### `leave.js`
+
 - `getUsedLeaveDays`, `isOnLeave`, `countLeaveDaysInYear`.
 - Employee: `handleApplyLeave`, `renderLeaveBalance`, `renderMyLeaves`, `cancelLeave`.
 - Admin: `renderAdminLeaves`, `openDecision`, `submitDecision`.
